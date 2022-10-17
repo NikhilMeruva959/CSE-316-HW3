@@ -36,7 +36,7 @@ const ListSelector = () => {
                     type="button"
                     id="add-list-button"
                     onClick={handleCreateNewList}
-                    className="playlister-button"
+                    className="toolbar-button"
                     value="+" />
                 Your Lists
             </div>                {

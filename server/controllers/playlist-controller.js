@@ -25,8 +25,9 @@ createPlaylist = (req, res) => {
 
     playlist
         .save()
-        .then(() => {
+        .then((arg) => {
             return res.status(201).json({
+                id: arg._id,
                 success: true,
                 playlist: playlist,
                 message: 'Playlist Created!',
