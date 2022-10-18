@@ -62,6 +62,34 @@ getPlaylists = async (req, res) => {
         return res.status(200).json({ success: true, data: playlists })
     }).catch(err => console.log(err))
 }
+editSong = async (req, res) => {
+    console.log("IM HERE");
+    console.log(req.body);
+    const songs = req.body.songs;
+    console.log("songs: " + songs);
+
+    const body2 = req.body;
+    // console.log("body: " + body2);
+    if (!body2) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a Song',
+        })
+    }
+    const playlist = new Playlist(body2);
+    console.log("playlist: " + JSON.stringify(playlist));
+    console.log("ID: " + req.params.id);
+    // console.log("ID: " + req.params.song);
+
+    Playlist.findByIdAndUpdate( {_id: req.params.id}, {songs: req.body.songs} , (err, list) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        console.log("NJNJNJ")
+        console.log(list)
+        return res.status(200).json({ success: true, playlist: list })
+    }).catch(err => console.log(err))
+}
 deletePlaylist = async (req, res) => {
     // console.log("JJJ9");
     // console.log(req.body);
@@ -108,4 +136,5 @@ module.exports = {
     getPlaylistPairs,
     getPlaylistById,
     deletePlaylist,
+    editSong,
 }

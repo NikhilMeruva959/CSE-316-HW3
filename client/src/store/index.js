@@ -16,6 +16,7 @@ export const GlobalStoreActionType = {
     CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
     CREATE_NEW_LIST: "CREATE_NEW_LIST",    
     DELETE_LIST: "DELETE_LIST",
+    EDIT_SONG: "EDIT_SONG",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
@@ -24,7 +25,10 @@ export const GlobalStoreActionType = {
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
 const tps = new jsTPS();
 let deleteListId2 = null;
-
+let deleteSongId2 = null;
+let deleteSongIndex = null;
+let listDeleteName = "";
+let songDeleteName = "";
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
 // AVAILABLE TO THE REST OF THE APPLICATION
@@ -76,6 +80,15 @@ export const useGlobalStore = () => {
                     currentList: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
+                })
+            }
+            // EDIT SONG
+            case GlobalStoreActionType.EDIT_SONG: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload.playlist,
+                    newListCounter: store.newListCounter,
+                    listNameActive: true
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -218,6 +231,108 @@ export const useGlobalStore = () => {
         modal.classList.remove("is-visible");
     }
 
+    store.addNewSong = async function (id) {
+        // console.log("Add Song");
+   
+        let song = {  
+            title: "Untitled",
+            artist: "Unknown",
+            youTubeId: "dQw4w9WgXcQ"
+        };
+        // console.log(this.currentList);
+        // console.log(this.currentList.songs);
+
+        // // this.currentList.songs.push(song);
+        // console.log("Aff");
+        // console.log(this.currentList);
+        // console.log(this.currentList.songs);
+
+        // console.log(id);
+        // console.log(this);
+        const newPlaylist = Object.assign({}, this.currentList);
+        newPlaylist.songs.push(song);
+        // console.log("jyjyfvuvv");
+        console.log(newPlaylist);
+        let response = await api.editSong(id, newPlaylist);
+        console.log(response);
+        if(response.data.success){
+            let playlist = response.data.playlist;
+            // console.log("Peepster");
+            // console.log(playlist);
+
+            storeReducer({
+                type: GlobalStoreActionType.EDIT_SONG,
+                payload: {
+                    playlist: playlist,
+                }
+            });
+        }
+        // store.loadIdNamePairs();
+    }
+
+    store.deleteSong = async function (id, index) {
+        console.log("dd Song");
+     
+        console.log(this.currentList);
+        console.log(this.currentList.songs);
+
+        // this.currentList.songs.push(song);
+        console.log("Aff");
+        console.log(this.currentList.songs[index]);
+        this.currentList.songs.splice(index, 1);
+        console.log(this.currentList.songs);
+        console.log(id);
+
+        let response = await api.editSong(id, this.currentList);
+        console.log(response);
+        if(response.data.success){
+            let playlist = response.data.playlist;
+            console.log("Peepster Part 2");
+            console.log(playlist);
+
+            storeReducer({
+                type: GlobalStoreActionType.EDIT_SONG,
+                payload: {
+                    playlist: playlist,
+                }
+            });
+        }
+    }
+
+    async function asyncShowDeleteSongModal(id, name){
+        let modal = document.getElementById("remove-song-modal");
+        console.log(modal);
+        console.log("LLL");
+        modal.classList.add("is-visible");
+        deleteSongId2 = id;
+        songDeleteName = name + "";
+        console.log(typeof songDeleteName);
+        var spanner = document.getElementById("remove-song-span"); 
+        spanner.innerHTML =  songDeleteName; 
+        // number.innerHTML = 'Are you sure you wish to permanently delete the '.concat(" ", songDeleteName).concat(" ", "from the playlist?");
+    } 
+    store.deleteSongStart = (_id, index, title) => {
+        // console.log("LLL1");   
+        // deleteSongId2 = _id;
+        deleteSongIndex = index;
+        console.log(title);
+        asyncShowDeleteSongModal(_id, title);
+
+    }
+    store.confirmDeleteSong = async function(){
+        // console.log("LLLggkkk");
+        // console.log(deleteListId2);
+        store.deleteSong(deleteSongId2, deleteSongIndex);
+        let modal = document.getElementById("remove-song-modal");
+        modal.classList.remove("is-visible");
+    }
+
+    store.hideDeleteSongModal = async function(){
+        deleteSongId2 = null;
+        let modal = document.getElementById("remove-song-modal");
+        // console.log(modal);
+        modal.classList.remove("is-visible");
+    }
 
 
     // THIS FUNCTION PROCESSES CHANGING A LIST NAME

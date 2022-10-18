@@ -22,9 +22,13 @@ function ListCard(props) {
                 _id = ("" + _id).substring("list-card-text-".length);
                 store.setCurrentList(_id);
             }
-            if (_id.indexOf('delete-list-') >= 0){
+            else if (_id.indexOf('delete-list-') >= 0){
                 _id = ("" + _id).substring("delete-list-".length);
             }
+            else{
+            store.setCurrentList(_id);
+            }
+
         }
     }
 
