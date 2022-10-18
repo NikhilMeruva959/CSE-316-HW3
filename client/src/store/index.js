@@ -14,7 +14,8 @@ export const GlobalStoreContext = createContext({});
 export const GlobalStoreActionType = {
     CHANGE_LIST_NAME: "CHANGE_LIST_NAME",
     CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
-    CREATE_NEW_LIST: "CREATE_NEW_LIST",
+    CREATE_NEW_LIST: "CREATE_NEW_LIST",    
+    DELETE_LIST: "DELETE_LIST",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
@@ -22,6 +23,8 @@ export const GlobalStoreActionType = {
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
 const tps = new jsTPS();
+let deleteListId2 = null;
+
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
 // AVAILABLE TO THE REST OF THE APPLICATION
@@ -64,6 +67,15 @@ export const useGlobalStore = () => {
                     currentList: payload,
                     newListCounter: store.newListCounter + 1,
                     listNameActive: false
+                })
+            }
+            // DELETE A LIST
+            case GlobalStoreActionType.DELETE_LIST: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -143,6 +155,71 @@ export const useGlobalStore = () => {
             });
         }
     }
+
+    // THIS FUNCTION PROCESSES DELETE A  LIST 
+    store.deleteList = async function (id) {
+        // console.log("DELETEEE");
+        // console.log(id);
+        // console.log(this.idNamePairs);
+
+        let response = await api.deleteList(id);
+        // console.log(response);
+        if(response.data.success){
+            let newId = this.idNamePairs;
+            let playlist = response.data.playlist;
+            // console.log("Nuts");
+            // console.log(playlist);
+            // console.log(this.idNamePairs);
+            function removeObjectWithId(arr, id) {
+                const objWithIdIndex = arr.findIndex((obj) => obj.id === id);
+                arr.splice(objWithIdIndex, 1);
+                return arr;
+              }
+              storeReducer({
+                type: GlobalStoreActionType.DELETE_LIST,
+                payload: {
+                    idNamePairs: newId,
+                    playlist: playlist,
+                    currentList: null,
+                }
+            });
+              removeObjectWithId(newId, id);
+              console.log(newId);
+              store.history.push("");
+        }
+    }
+    async function asyncShowDeleteListModal(id, name){
+        let modal = document.getElementById("delete-list-modal");
+        // console.log(modal);
+        // console.log("LLL");
+        modal.classList.add("is-visible");
+        deleteListId2 = id;
+        let listDeleteName = name + "";
+        var number = document.getElementById("modal-center-content");  
+        number.innerHTML = 'Are you sure you wish to permanently delete the '.concat(" ", listDeleteName).concat(" ", "playlist?");
+    } 
+    store.deleteListStart = (id, name) => {
+        // console.log("LLL1");   
+        // console.log(name);
+        asyncShowDeleteListModal(id, name);
+
+    }
+    store.confirmDeleteList = async function(){
+        // console.log("LLLggkkk");
+        // console.log(deleteListId2);
+        store.deleteList(deleteListId2);
+        let modal = document.getElementById("delete-list-modal");
+        modal.classList.remove("is-visible");
+    }
+    store.hideDeleteListModal = async function(){
+        deleteListId2 = null;
+        let modal = document.getElementById("delete-list-modal");
+        // console.log(modal);
+        modal.classList.remove("is-visible");
+    }
+
+
+
     // THIS FUNCTION PROCESSES CHANGING A LIST NAME
     store.changeListName = function (id, newName) {
         // GET THE LIST
