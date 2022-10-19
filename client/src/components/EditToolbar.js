@@ -30,7 +30,7 @@ function EditToolbar() {
         store.addNewSong(_id);
     }
     let editStatus = false;
-    if (store.isListNameEditActive) {
+    if (store.currentList === null) {
         editStatus = true;
     }
     return (

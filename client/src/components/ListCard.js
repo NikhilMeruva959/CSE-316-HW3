@@ -26,9 +26,9 @@ function ListCard(props) {
                 _id = ("" + _id).substring("delete-list-".length);
             }
             else{
-            store.setCurrentList(_id);
+                // CHANGE THE CURRENT LIST
+                store.setCurrentList(_id);
             }
-
         }
     }
 

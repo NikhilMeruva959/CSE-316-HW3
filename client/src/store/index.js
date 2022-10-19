@@ -207,7 +207,7 @@ export const useGlobalStore = () => {
         // console.log("LLL");
         modal.classList.add("is-visible");
         deleteListId2 = id;
-        let listDeleteName = name + "";
+        listDeleteName = name + "";
         var number = document.getElementById("modal-center-content");  
         number.innerHTML = 'Are you sure you wish to permanently delete the '.concat(" ", listDeleteName).concat(" ", "playlist?");
     } 
