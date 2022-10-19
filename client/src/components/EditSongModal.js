@@ -6,7 +6,11 @@ function EditSongModal(){
     const { store } = useContext(GlobalStoreContext);
 
     function handleConfirm(){
-        store.confirmEditSong();
+        console.log("kvbievbveibevibev");
+        let tempTitle = document.getElementById("edit-song-modal-title-textfield").value;
+        let tempArtist = document.getElementById("edit-song-modal-artist-textfield").value;
+        let tempId = document.getElementById("edit-song-modal-youTubeId-textfield").value;
+        store.confirmEditSong(tempTitle, tempArtist, tempId);
     }
     function handleCancel(){
         store.hideEditSong();

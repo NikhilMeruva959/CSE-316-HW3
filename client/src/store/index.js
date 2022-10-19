@@ -375,6 +375,42 @@ export const useGlobalStore = () => {
 
 
     //--------------------------------------------------------------
+    store.editSongHelper = async function (id, index, newTitle, newArtist, newY) {
+        console.log("Edit Song");
+     
+        console.log(this.currentList);
+        console.log(this.currentList.songs);
+
+        let newSongUpdate = {  
+            title: newTitle,
+            artist: newArtist,
+            youTubeId: newY,
+        };
+        // this.currentList.songs.push(song);
+        console.log("Aff");
+        console.log(this.currentList.songs[index]);
+        this.currentList.songs.splice(index, 1);
+        this.currentList.songs.splice(index, 0, newSongUpdate);
+
+        console.log(this.currentList.songs);
+        console.log(id);
+
+        let response = await api.editSong(id, this.currentList);
+        console.log(response);
+        if(response.data.success){
+            let playlist = response.data.playlist;
+            console.log("Peepster Part 2");
+            console.log(playlist);
+
+            storeReducer({
+                type: GlobalStoreActionType.EDIT_SONG,
+                payload: {
+                    playlist: playlist,
+                }
+            });
+        }
+    }
+
     async function asyncShowEditSongModal(id, index, title, artist, youTubeId){
         let modal = document.getElementById("edit-song-modal");
         modal.classList.add("is-visible");
@@ -398,10 +434,11 @@ export const useGlobalStore = () => {
     store.editSongStart = (id, index, title, artist, youTubeId) => {
         asyncShowEditSongModal(id, index, title, artist, youTubeId);
     }
-    store.confirmEditSong = async function(){
+    store.confirmEditSong = async function(newTitle, newArtist, newY){
         // console.log("LLLggkkk");
         // console.log(deleteListId2);
         // store.deleteList(deleteListId2);
+        store.editSongHelper(editSongIdX, editSongIndex, newTitle, newArtist, newY);
         let modal = document.getElementById("edit-song-modal");
         modal.classList.remove("is-visible");
     }
