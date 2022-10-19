@@ -49,6 +49,27 @@ getPlaylistById = async (req, res) => {
         return res.status(200).json({ success: true, playlist: list })
     }).catch(err => console.log(err))
 }
+// getPlaylistById = async (req, res) => {
+//     const body = req.body;
+
+//     if(!body){
+//         return res.status(400).json({success: false, error: '',})
+//     }
+
+//     Playlist.findOne({ _id: req.params.id }, (err, playlist) => {
+//         if (err) {
+//             return res.status(404).json({err, message:'', })
+//         }
+//         playlist.name = req.body.name
+//         playlist.songs = req.body.songs
+//         playlist.save().then(() => {
+//             return res.status(200).json({ success: true, id: playlist._id, message:''})
+//         })
+//         .catch(error => {return res.status(404).json({error,message:'',
+//         })
+//     })
+//     })
+// }
 getPlaylists = async (req, res) => {
     await Playlist.find({}, (err, playlists) => {
         if (err) {

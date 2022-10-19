@@ -14,7 +14,8 @@ export const GlobalStoreContext = createContext({});
 export const GlobalStoreActionType = {
     CHANGE_LIST_NAME: "CHANGE_LIST_NAME",
     CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
-    CREATE_NEW_LIST: "CREATE_NEW_LIST",    
+    CREATE_NEW_LIST: "CREATE_NEW_LIST",  
+    EDIT_LIST_NAME: "EDIT_LIST_NAME",  
     DELETE_LIST: "DELETE_LIST",
     EDIT_SONG: "EDIT_SONG",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
@@ -94,6 +95,15 @@ export const useGlobalStore = () => {
                     currentList: payload.playlist,
                     newListCounter: store.newListCounter,
                     listNameActive: true
+                })
+            }
+              // EDIT SONG
+              case GlobalStoreActionType.EDIT_LIST_NAME: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload.playlist,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -511,6 +521,15 @@ export const useGlobalStore = () => {
             type: GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE,
             payload: null
         });
+    }
+    store.setIsListNameEditActive = function (id) {
+        async function asyncSetIsListNameEditActive (){
+            let response = await api.getPlaylistById(id);
+        storeReducer({
+            type: GlobalStoreActionType.CHANGE_LIST_NAME,
+            payload: { idNamePairs: store.idNamePairs,}
+        });
+    }
     }
 
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
