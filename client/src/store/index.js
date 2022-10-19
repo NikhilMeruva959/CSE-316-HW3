@@ -29,6 +29,11 @@ let deleteSongId2 = null;
 let deleteSongIndex = null;
 let listDeleteName = "";
 let songDeleteName = "";
+let editSongIdX = null;
+let editSongIndex = null;
+let editSongTitle = "";
+let editSongArtist = "";
+let  editSongY = "";
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
 // AVAILABLE TO THE REST OF THE APPLICATION
@@ -367,6 +372,48 @@ export const useGlobalStore = () => {
         }
         asyncChangeListName(id);
     }
+
+
+    //--------------------------------------------------------------
+    async function asyncShowEditSongModal(id, index, title, artist, youTubeId){
+        let modal = document.getElementById("edit-song-modal");
+        modal.classList.add("is-visible");
+        editSongIdX = id;
+        editSongIndex = index;
+        editSongTitle = title + "";
+        editSongArtist = artist + "";
+        editSongY = youTubeId + "";
+        console.log("99999");
+        console.log(editSongTitle);
+        console.log(editSongArtist);
+        console.log(editSongY);
+        var number1 = document.getElementById("edit-song-modal-title-textfield");  
+        var number2 = document.getElementById("edit-song-modal-artist-textfield");  
+        var number3 = document.getElementById("edit-song-modal-youTubeId-textfield");  
+        number1.value = editSongTitle;
+        number2.value = editSongArtist;
+        number3.value = editSongY;
+
+    } 
+    store.editSongStart = (id, index, title, artist, youTubeId) => {
+        asyncShowEditSongModal(id, index, title, artist, youTubeId);
+    }
+    store.confirmEditSong = async function(){
+        // console.log("LLLggkkk");
+        // console.log(deleteListId2);
+        // store.deleteList(deleteListId2);
+        let modal = document.getElementById("edit-song-modal");
+        modal.classList.remove("is-visible");
+    }
+    store.hideEditSong = async function(){
+        editSongIdX = null;
+        editSongIndex = null;
+        let modal = document.getElementById("edit-song-modal");
+        // console.log(modal);
+        modal.classList.remove("is-visible");
+    }
+    //--------------------------------------------------------------
+
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {

@@ -17,11 +17,17 @@ function SongCard(props) {
         store.deleteSongStart(_id, index, song.title);  
         // store.deleteSong(_id, index);
     }
+    function handleEditSong(){
+        let _id = store.currentList._id;
+
+        store.editSongStart(_id, index, song.title, song.artist, song.youTubeId);  
+    }
     return (
         <div
             key={index}
             id={'song-' + index + '-card'}
             className={cardClass}
+            onDoubleClick={handleEditSong}
         >
             {index + 1}.
             <a
